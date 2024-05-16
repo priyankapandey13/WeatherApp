@@ -1,16 +1,13 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import {
-  Container,
-  Row,
-  Col,
-  Form,
-  Button,
-  DropdownButton,
-  Dropdown,
-  FloatingLabel,
-} from "react-bootstrap";
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import FormSelect from "react-bootstrap/FormSelect";
 import "bootstrap/dist/css/bootstrap.min.css";
+
+// import SwaggerUI from "swagger-ui-react"
+// import "swagger-ui-react/swagger-ui.css"
+
+// export default App = () => <SwaggerUI url="https://petstore.swagger.io/v2/swagger.json" />
 
 const API_KEY = "4c030262d17b5f16a57f1a288881aabb";
 // https://dummyjson.com/products
@@ -21,6 +18,18 @@ let cityname;
 
 let leti = 28.6667;
 let longi = 77.2167;
+
+const url =
+  "https://ai-weather-by-meteosource.p.rapidapi.com/find_places?text=india&language=en";
+// "https://meteostat.p.rapidapi.com/stations/hourly?station=10637&start=2020-01-01&end=2020-01-01&tz=Europe%2FBerlin";
+// "https://ai-weather-by-meteosource.p.rapidapi.com/daily?lat=37.81021&lon=-122.42282&language=en&units=auto";
+const options = {
+  method: "GET",
+  headers: {
+    "X-RapidAPI-Key": "7abd618da1msh25b7e4a8c0ea807p1c3e92jsn224b183ad913",
+    "X-RapidAPI-Host": "meteostat.p.rapidapi.com",
+  },
+};
 
 function App() {
   const [weather, setWeather] = useState([]);
@@ -42,7 +51,18 @@ function App() {
       );
     };
 
+    const getWeatherInfo = async () => {
+      try {
+        const response = await fetch(url, options);
+        const result = await response.text();
+        console.log(result);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     getCountry();
+    getWeatherInfo();
   }, []);
 
   // console.log(weather);
@@ -52,11 +72,6 @@ function App() {
     setCurrentCountry(e.currentTarget.value);
 
     // console.log(country); //india iso2
-    // strategy --------- ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    // call country api     (done)
-    // get the get their cities name based on the country selection (partially done)
-    // call iso2 for shortname ex : for india IN
-    // call another api and match the Iso2 in their api and get the data.
 
     // countrylist.map(cities => )
   };
@@ -112,10 +127,7 @@ function App() {
             <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
           </DropdownButton> */}
 
-                <Form.Select
-                  aria-label="Default select example"
-                  onChange={getcountryname}
-                >
+                <Form.Select onChange={getcountryname}>
                   <option>Select Countries</option>
                   {countrylist.map((item) => (
                     <option href={item.country} key={item.country}>
@@ -126,21 +138,21 @@ function App() {
                 <br></br>
 
                 {typeof currentCountry === "object" ? (
-                  <Form.Select aria-label="Default select example">
+                  <Form.Select disabled>
                     <option>No country has been selected</option>
                   </Form.Select>
                 ) : (
                   countrylist
                     .filter((arrylist) => arrylist.country === currentCountry)
-                    .map((citylist) => (
+                    .map((citylist, index) => (
                       <Form.Select
-                        aria-label="Default select example"
+                        as="select"
+                        key={index}
                         onChange={getCityName}
                       >
-                        <option>Select the city</option>
-                        {citylist.cities.map((city) => (
-                          <option href={city} key={city}>
-                            {" "}
+                        {/* <option key="selectcity">Select the city</option> */}
+                        {citylist.cities.map((city, i) => (
+                          <option key={i} value={city}>
                             {city}
                           </option>
                         ))}
@@ -154,7 +166,6 @@ function App() {
 
                 <h1> Your selected country : {currentCountry}</h1>
                 <h2>
-                  {" "}
                   {currentCountry} 's cities : {currentCity}
                 </h2>
               </Form.Group>
