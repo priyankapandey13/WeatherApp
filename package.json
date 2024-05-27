@@ -8,15 +8,21 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "nodemon": "^3.1.0",
     "prettier": "^3.2.5",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
+    "react-svg-worldmap": "^1.0.38",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
+    "server": "nodemon src/testfile.js",
+    "dev": "concurrently \"npm start\" \"npm run server\" ",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -38,5 +44,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-private-property-in-object": "^7.24.5",
+    "concurrently": "^8.2.2"
   }
 }

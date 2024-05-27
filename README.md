@@ -71,3 +71,6 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 =======
 # WeatherApp
 This app will show the weather conditions in a fun way according to the place user selects. 
+
+This app takes the country name and provides city name to select from and gives the basic weather information.
+It also showes the area you selected on the map as well.
