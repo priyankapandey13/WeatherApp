@@ -1,27 +1,34 @@
 
+import { useState, useEffect } from "react";
 import { WorldMap } from "react-svg-worldmap";
 
-function WorldWeatherMap() {
-  const data = [
-    { country: "cn", value: 1389618778 }, // china
-    { country: "ca", value: 1311559204 }, // canada
-    { country: "in", value: 1311559204 }, // india
-    { country: "us", value: 331883986 }, // united states
-    { country: "id", value: 264935824 }, // indonesia
-    { country: "pk", value: 210797836 }, // pakistan
-    { country: "br", value: 210301591 }, // brazil
-    { country: "ng", value: 208679114 }, // nigeria
-    { country: "bd", value: 161062905 }, // bangladesh
-    { country: "ru", value: 141944641 }, // russia
-    { country: "mx", value: 127318112 }, // mexico
-  ];
-  const stylingFunction = (context: any) => {
-    const opacityLevel =
-      0.1 +
-      (1.5 * (context.countryValue - context.minValue)) /
-        (context.maxValue - context.minValue);
+function WorldWeatherMap(inputdata) { 
+  const [datas, setDatas] = useState([]);
+  useEffect(() => {
+    setDatas([
+      { country: inputdata.currentcity.iso2, value: inputdata.currentcity.lat },    
+    ])
+  }, [inputdata]);
+  // setDatas(inputdata.currentcity.city, inputdata.currentcity.lat);
+  // setDatas(inputdata.currentcity.city, inputdata.currentcity.weatherData);
+  console.log(inputdata.currentcity);
+  // console.log(inputdata.currentcity.city);
+  // console.log(datas);
+
+  // const currentData = inputdata.currentcity;
+  // const data = [
+  //   // { country: inputdata.currentcity.iso2, value: inputdata.currentcity.lat }, // india
+  //   // { country: inputdata.currentcity.iso2, value: 55.6761 }, // india
+  //   { country: 'FR', value: 55.6761 }, // india
+    
+  // ];
+console.log(datas);
+  const stylingFunction = (context: any) => { 
+    // const opacityLevel = 0.1 + (1.5 * (context.countryValue - context.minValue)) / (context.maxValue - context.minValue);
+    const opacityLevel = 0.9;
+
     return {
-      fill: context.country === "US" ? "blue" : context.color,
+      fill: context.country === "ru" ? "blue" : context.color,
       fillOpacity: opacityLevel,
       stroke: "green",
       strokeWidth: 1,
@@ -29,14 +36,13 @@ function WorldWeatherMap() {
       cursor: "pointer",
     };
   };
-
-  return (
-        <WorldMap
+// title="Top 10 Populous Countries"
+  return (  
+              <WorldMap
           color="red"
-          // title="Top 10 Populous Countries"
           value-suffix="people"
           size="lg"
-          data={data}
+          data={datas}
           stylingFunction={stylingFunction}
           style={{color: "red", width:'100%'}}
         />

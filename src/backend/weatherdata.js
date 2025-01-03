@@ -12,14 +12,26 @@ app.use(cors());
 //   next();
 // });
 
-app.get("/api/weather", (req, res) => {
-  // Your existing code
-  res.send({
-    /* your weather data */
-  });
+// app.get("/api/weather", (req, res) => {
+//   // Your existing code
+//   res.send({
+//     /* your weather data */
+//   });
+// });
+
+app.get("/", (req, res) => {
+  res.send("Welcome to CORS server 😁");
 });
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () =>
-  console.log(`Backend server is running on port ${PORT}`)
-);
+app.get("/api/weather", (req, res) => {
+  res.json({ message: "Hello, world!" });
+});
+
+// const PORT = process.env.PORT || 4000;
+// app.listen(PORT, () =>
+//   console.log(`Backend server is running on port ${PORT}`)
+// );
+
+app.listen(5000, () => {
+  console.log("Server is running on http://localhost:5000");
+});
