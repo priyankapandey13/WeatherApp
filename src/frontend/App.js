@@ -30,84 +30,88 @@ import axios from "axios";
 // let leti = 28.6667;
 // let longi = 77.2167;
 
-const url =
-  "https://ai-weather-by-meteosource.p.rapidapi.com/find_places?text=india&language=en";
+// const url =
+//   "https://ai-weather-by-meteosource.p.rapidapi.com/find_places?text=india&language=en";
 // "https://meteostat.p.rapidapi.com/stations/hourly?station=10637&start=2020-01-01&end=2020-01-01&tz=Europe%2FBerlin";
 // "https://ai-weather-by-meteosource.p.rapidapi.com/daily?lat=37.81021&lon=-122.42282&language=en&units=auto";
 
-const Weather_API =
-  "https://cors-anywhere.herokuapp.com/https://weatherappbackend-k6pp.onrender.com/api/weather";
-const options = {
-  method: "GET",
-  headers: {
-    "X-RapidAPI-Key": "7abd618da1msh25b7e4a8c0ea807p1c3e92jsn224b183ad913",
-    "X-RapidAPI-Host": "meteostat.p.rapidapi.com",
-    "Content-Type": "application/json",
-    Accept: "*/*",
-  },
-};
+// const Weather_API =
+//   "https://cors-anywhere.herokuapp.com/https://weatherappbackend-k6pp.onrender.com/api/weather";
+// const options = {
+//   method: "GET",
+//   headers: {
+//     "X-RapidAPI-Key": "7abd618da1msh25b7e4a8c0ea807p1c3e92jsn224b183ad913",
+//     "X-RapidAPI-Host": "meteostat.p.rapidapi.com",
+//     "Content-Type": "application/json",
+//     Accept: "*/*",
+//   },
+// };
 
 const paramFrance = {
   city: "Paris",
   country: "france",
+  iso2: "FR",
 };
 const paramIran = {
   city: "Tehran",
   country: "Iran",
+  iso2: "IR",
 };
 const paramDenmark = {
   city: "Copenhagen",
   country: "Denmark",
+  iso2: "DK",
 };
 const paramEngland = {
   city: "London",
   country: "England",
+  iso2: "GB",
 };
 const paramGermany = {
   city: "Berlin",
   country: "Germany",
+  iso2: "DE",
 };
 
 function App() {
   const [weatherData, setWeatherData] = useState([]);
   const [countrylist, setCountrylist] = useState([]);
-  const [citylist, setCitylist] = useState({
-    city: "Copenhagen",
-    country: "Denmark",
-  });
+  const [citylist, setCitylist] = useState({ city: "", country: "", iso2: "" }); // default is set to denmark
 
-  const [currentCity, setCurrentCity] = useState("Not selected");
+  const [currentCity, setCurrentCity] = useState("Not selected"); // should not need this, free this
+  const [currentCountry, setCurrentCountry] = useState([]); // should not need this, free this
+  // const [userdata, setUserdata] = useState();
 
-  const [currentCountry, setCurrentCountry] = useState([]);
-  // const [testalldata, setTestalldata] = useState([]);
+  // const getcountryname = (e) => {
+  //   // setCountry(e.currentTarget.value);
+  //   setCurrentCountry(e.currentTarget.value);
+  // };
 
-  const getcountryname = (e) => {
-    // setCountry(e.currentTarget.value);
-    setCurrentCountry(e.currentTarget.value);
+  // const getCityName = (e) => {
+  //   setCurrentCity(e.target.value);
+  // };
+
+  const resetfunction = () => {
+    console.log("I am in resetfunction");
+    setCitylist({
+      city: "",
+      country: "",
+      iso2: "",
+    });
   };
 
-  const getCityName = (e) => {
-    setCurrentCity(e.target.value);
-  };
-
-  useEffect(() => {
-    //   const getCountry = async () => {
-    //       return fetch(`https://restcountries.com/v3.1/all?fields=name,flags`).then((response) => response.json().then(data => setCountrylist(data)));
-    // }
-
-    const getWeatherData = async () => {
-      // return fetch(`${weatherUrl}q=${"Delhi"}&appid=${API_KEY}`).then(
-      //   (response) =>
-      //     response.json().then((data) => {
-      //       setWeather(data);
-      //     })
-      // );
+  const getWeatherData = async () => {
+    // return fetch(`${weatherUrl}q=${"Delhi"}&appid=${API_KEY}`).then(
+    //   (response) =>
+    //     response.json().then((data) => {
+    //       setWeather(data);
+    //     })
+    // );
+    console.log("I have reached to the api");
+    if (citylist.country && citylist.city !== "") {
       try {
         const response = await axios.get(
-          "https://cors-anywhere.herokuapp.com/https://weatherappbackend-k6pp.onrender.com/api/weather",
-          {
-            params: citylist,
-          },
+          `https://cors-anywhere.herokuapp.com/https://weatherappbackend-k6pp.onrender.com/api/weather?country=${citylist.country}&city=${citylist.city}`,
           {
             headers: {
               // "X-RapidAPI-Key":
@@ -119,15 +123,46 @@ function App() {
             },
           }
         );
+        // const response = await axios.get(
+        //   "https://cors-anywhere.herokuapp.com/https://weatherappbackend-k6pp.onrender.com/api/weather",
+        //   {
+        //     params: citylist,
+        //   },
+        //   {
+        //     headers: {
+        //       // "X-RapidAPI-Key":
+        //       //   "7abd618da1msh25b7e4a8c0ea807p1c3e92jsn224b183ad913",
+        //       // "X-RapidAPI-Host": "meteostat.p.rapidapi.com",
+        //       // "Content-Type": "application/json",
+        //       Accept: "*/*",
+        //       mode: "no-cors",
+        //     },
+        //   }
+        // );
+        //   // data.assign(citylist.iso2);
+        response.data.iso2 = citylist.iso2;
         setWeatherData(response.data);
-        console.log(response.data);
-        console.log("Hello Im here in submit action");
+        // console.log(weatherData);
+        // console.log(citylist);
+        // console.log("Hello Im here in submit action");
         return response.data;
       } catch (error) {
         console.error("Error fetching data:", error);
         throw error;
       }
-    };
+    } else {
+      console.log("Error in the getWeatherData function");
+    }
+  };
+
+  // console.log(countrylist); // data of all the countries : name, cities, iso
+  // console.log(weatherData); // weatherdata of selected country
+  // console.log(citylist); // citydata of current country : countryname, cityname, iso2
+
+  useEffect(() => {
+    //   const getCountry = async () => {
+    //       return fetch(`https://restcountries.com/v3.1/all?fields=name,flags`).then((response) => response.json().then(data => setCountrylist(data)));
+    // }
 
     const getCountry = async () => {
       return fetch(`https://countriesnow.space/api/v0.1/countries`).then(
@@ -139,7 +174,7 @@ function App() {
     getWeatherData();
     // fetchAllData();
     // getWeatherInfo();
-  }, [setCitylist, citylist]);
+  }, [citylist]); //citylist, weatherData
 
   const defaultProps = {
     center: {
@@ -152,119 +187,152 @@ function App() {
   return (
     <div className="App">
       <h1>Fun weather app</h1>
-      <Spinner animation="border" role="status">
-        <span className="visually-hidden">Loading...</span>
-      </Spinner>
       <Container fluid>
         <Row>
           <Col>
             <Form className="signup-form">
-              <Form.Group>
-                <Form.Select onChange={getcountryname}>
-                  <option>Select Countries</option>
-                  {countrylist.map((item) => (
-                    <option href={item.country} key={item.country}>
-                      {item.country}{" "}
-                    </option>
-                  ))}
-                </Form.Select>
-                <br></br>
-
-                {typeof currentCountry === "object" ? (
-                  <Form.Select disabled>
-                    <option>No country has been selected</option>
+              <Row>
+                {/* <Form.Group> */}
+                <Col>
+                  <Form.Select
+                    // onChange={getcountryname}
+                    onChange={(e) => {
+                      setCurrentCountry(e.target.value);
+                    }}
+                  >
+                    <option>Select Countries</option>
+                    {countrylist.map((item) => (
+                      <option href={item.country} key={item.iso2}>
+                        {item.country}{" "}
+                      </option>
+                    ))}
                   </Form.Select>
-                ) : (
-                  countrylist
-                    .filter((arrylist) => arrylist.country === currentCountry)
-                    .map((citylist, index) => (
-                      <Form.Select
-                        as="select"
-                        key={index}
-                        onChange={getCityName}
-                      >
-                        {/* <option key="selectcity">Select the city</option> */}
-                        {citylist.cities.map((city, i) => (
-                          <option key={i} value={city}>
-                            {city}
-                          </option>
-                        ))}
-                      </Form.Select>
-                    ))
-                )}
+                  {/* <br></br> */}
+                </Col>
+                <Col>
+                  {typeof currentCountry === "object" ? (
+                    <Form.Select disabled>
+                      <option>No country has been selected</option>
+                    </Form.Select>
+                  ) : (
+                    countrylist
+                      .filter((arrylist) => arrylist.country === currentCountry)
+                      .map((citieslist, index) => (
+                        <Form.Select
+                          as="select"
+                          key={index}
+                          // onChange={getCityName}
+                          onChange={(e) => {
+                            setCurrentCity(e.target.value);
+                          }}
+                        >
+                          {/* <option key="selectcity">Select the city</option> */}
+                          {citieslist.cities.map((city, i) => (
+                            <option key={i} value={city}>
+                              {city}
+                            </option>
+                          ))}
+                        </Form.Select>
+                      ))
+                  )}
+                </Col>
+              </Row>
+              <br></br>
+              <Row>
                 <Button
                   onClick={() => {
+                    const currentcountryisodata = countrylist.filter(
+                      (Clist) => Clist.country === currentCountry
+                    );
+
                     setCitylist({
-                      city: currentCity,
                       country: currentCountry,
+                      city: currentCity,
+                      iso2: currentcountryisodata[0].iso2,
                     });
-                    console.log("paramFrance is been activated");
+                    console.log("Submit button is been activated");
+                    getWeatherData();
                   }}
                   // onClick={getWeatherData}
                 >
                   Submit
                 </Button>
-                <br></br>
-                <hr></hr>
-                <br></br>
-                <ButtonGroup aria-label="Basic example">
-                  <Button
-                    variant="secondary"
-                    onClick={() => {
-                      setCitylist(paramIran);
-                      console.log("paramFrance is been activated");
-                    }}
-                  >
-                    Iran(Tehran)
-                  </Button>
+                <Button
+                  onClick={() => {
+                    resetfunction();
 
-                  <Button
-                    variant="secondary"
-                    onClick={() => {
-                      setCitylist(paramFrance);
-                      console.log("paramFrance is been activated");
-                    }}
-                  >
-                    PARIS(France)
-                  </Button>
+                    console.log("Clear button is activated");
+                  }}
+                >
+                  Clear button
+                </Button>
+              </Row>
+              <hr></hr>
+              <Row>
+                {weatherData.length === 0 ? (
+                  "Nothing to show here"
+                ) : (
+                  <ButtonGroup aria-label="Basic example">
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        debugger;
+                        setCitylist(paramIran);
+                        console.log("paramIran is been activated");
+                      }}
+                    >
+                      Iran(Tehran)
+                    </Button>
 
-                  <Button
-                    variant="secondary"
-                    onClick={() => {
-                      setCitylist(paramDenmark);
-                      console.log("paramDenmark is been activated");
-                    }}
-                  >
-                    COPENHAGEN(Denmark)
-                  </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        setCitylist(paramFrance);
+                        console.log("paramFrance is been activated");
+                      }}
+                    >
+                      PARIS(France)
+                    </Button>
 
-                  <Button
-                    onClick={() => {
-                      setCitylist(paramEngland);
-                      console.log("paramEngland is been activated");
-                    }}
-                  >
-                    LONDON(England)
-                  </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        setCitylist(paramDenmark);
+                        console.log("paramDenmark is been activated");
+                      }}
+                    >
+                      COPENHAGEN(Denmark)
+                    </Button>
 
-                  <Button
-                    onClick={() => {
-                      setCitylist(paramGermany);
-                      console.log("paramGermany is been activated");
-                    }}
-                  >
-                    BERLIN(Germany)
-                  </Button>
-                </ButtonGroup>
-                <h1> Your selected country : {currentCountry}</h1>
+                    <Button
+                      onClick={() => {
+                        setCitylist(paramEngland);
+                        console.log("paramEngland is been activated");
+                      }}
+                    >
+                      LONDON(England)
+                    </Button>
+
+                    <Button
+                      onClick={() => {
+                        setCitylist(paramGermany);
+                        console.log("paramGermany is been activated");
+                      }}
+                    >
+                      BERLIN(Germany)
+                    </Button>
+                  </ButtonGroup>
+                )}
+                {/* <h1> Your selected country : {currentCountry}</h1>
                 <h2>
                   {currentCountry} 's cities : {currentCity}
-                </h2>
-              </Form.Group>
+                </h2> */}
+                {/* </Form.Group> */}
+              </Row>
             </Form>
           </Col>
           <Col>
-            {weatherData.length === 0 ? (
+            {weatherData.length === 0 || citylist.length === 0 ? (
               "Nothing to show here"
             ) : (
               <WeatherCards weatherData={weatherData}></WeatherCards>
@@ -272,9 +340,29 @@ function App() {
           </Col>
         </Row>
         <Row className="mapbox">
-          {/* Google map starts from here */}
-          <WorldWeatherMap></WorldWeatherMap>
-          {/* Google map starts from here */}
+          <Col>
+            <div
+              style={{ width: 50, height: 50, backgroundColor: "powderblue" }}
+            >
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+            </div>
+            {/* Google map starts from here */}
+
+            {/* {weatherData.length === 0 ? (
+              <div
+                style={{ width: 50, height: 50, backgroundColor: "powderblue" }}
+              >
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+              </div>
+            ) : (
+              <WorldWeatherMap currentcity={weatherData}></WorldWeatherMap>
+            )} */}
+          </Col>
+          {/* Google map ends here */}
         </Row>
       </Container>
     </div>
